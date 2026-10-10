@@ -1,0 +1,415 @@
+<title>Révision DEAES Mme L.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Lexend:wght@400;600&display=swap">
+<style>
+/* Layout : accueil en tuiles d'activités courtes, puis une seule question à l'écran. Texte large et aéré, pensé pour une lectrice dys. */
+:root{
+  --bg:#f5f6fa; --paper:#ffffff; --ink:#22283a; --muted:#5a6280; --line:#dadfeb;
+  --bic:#2a48b5; --hl-green:#c6f1b0; --hl-orange:#ffd9a6; --star:#e8a317;
+  --ok:#1b7443; --ko:#a8301f; --ok-bg:#e2f5e8; --ko-bg:#fbe8e4;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Lexend","Verdana","Segoe UI",system-ui,sans-serif;
+  --fs:18px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12151d; --paper:#1b202c; --ink:#e8ebf4; --muted:#a6aec5; --line:#2f3648;
+  --bic:#98adff; --hl-green:#2e5629; --hl-orange:#68481c; --star:#f2bd45;
+  --ok:#82d8a4; --ko:#ff9f95; --ok-bg:#183225; --ko-bg:#3b201d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151d; --paper:#1b202c; --ink:#e8ebf4; --muted:#a6aec5; --line:#2f3648;
+  --bic:#98adff; --hl-green:#2e5629; --hl-orange:#68481c; --star:#f2bd45;
+  --ok:#82d8a4; --ko:#ff9f95; --ok-bg:#183225; --ko-bg:#3b201d; color-scheme:dark}
+:root.big{--fs:21px}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:var(--fs);line-height:1.7;letter-spacing:.015em;word-spacing:.08em;padding-inline:16px;padding-block:0 56px}
+.wrap{max-width:760px;margin:0 auto}
+header{padding-block:24px 8px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-end}
+.eyebrow{font-size:.75em;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.8rem,6vw,2.5rem);line-height:1.1;margin:.15em 0 0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:800;font-size:1.45em;line-height:1.2;margin:0;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:1.1em;margin:0}
+p{margin:0}
+.hl{background:linear-gradient(transparent 50%,var(--hl-green) 50%);padding-inline:3px}
+.hlo{background:linear-gradient(transparent 50%,var(--hl-orange) 50%);padding-inline:3px}
+.muted{color:var(--muted)}
+.stars{font-family:var(--display);font-weight:800;font-size:1.1em;color:var(--star);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button{font-family:var(--body);font-size:1em;letter-spacing:inherit;cursor:pointer;color:inherit}
+.small{font-size:.8em;font-weight:600;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.small[aria-pressed="true"]{border-color:var(--bic);color:var(--bic)}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--bic);outline-offset:2px}
+
+/* Accueil */
+.intro{padding-block:4px 20px;max-width:58ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tile{text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:6px;align-content:start}
+.tile:hover{border-color:var(--bic)}
+.tile .meta{display:flex;justify-content:space-between;gap:8px;font-size:.78em;color:var(--muted);font-weight:600}
+.tile .meta .stars{font-size:1.1em}
+.tile p{font-size:.88em;color:var(--muted)}
+
+/* Activité */
+.act{display:grid;gap:16px;padding-block:8px}
+.back{justify-self:start;background:none;border:0;color:var(--bic);font-weight:600;padding:8px 0}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--bic);border-radius:99px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:16px}
+.qt{font-size:1.12em;font-weight:600;max-width:52ch}
+.ctx{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:8px}
+.ctxt{max-width:58ch}
+.qhead{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.say{flex:none;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.78em;font-weight:600;color:var(--bic)}
+.opts{display:grid;gap:10px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px 14px;line-height:1.45}
+.opt:hover:not(:disabled){border-color:var(--bic)}
+.opt:disabled{cursor:default}
+.opt.good{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opt.bad{background:var(--ko-bg);border-color:var(--ko);color:var(--ko)}
+.fb{border-radius:10px;padding:12px 14px;font-size:.92em}
+.fb.ok{background:var(--ok-bg);color:var(--ok)} .fb.ko{background:var(--ko-bg);color:var(--ko)}
+.go{justify-self:start;background:var(--bic);color:var(--paper);border:0;border-radius:10px;padding:12px 20px;font-weight:600}
+.ghost{background:transparent;color:var(--bic);border:2px solid var(--bic);border-radius:10px;padding:10px 18px;font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.big-score{font-family:var(--display);font-weight:800;font-size:2.4em;line-height:1}
+.end-stars{font-size:2em;color:var(--star);letter-spacing:.1em}
+ul.clean{margin:0;padding-left:1.1em;display:grid;gap:4px}
+@media (max-width:480px){.opts.two{grid-template-columns:1fr}}
+
+/* Relier */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match .col{display:grid;gap:10px;align-content:start;min-width:0}
+.mt{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.9em;line-height:1.4}
+.mt.sel{border-color:var(--bic);background:var(--paper);box-shadow:0 0 0 2px var(--bic)}
+.mt.done{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);cursor:default}
+.mt.wrong{border-color:var(--ko);background:var(--ko-bg)}
+
+/* Puzzle */
+.pieces{display:grid;gap:10px}
+.piece{text-align:left;background:var(--bg);border:2px dashed var(--line);border-radius:12px;padding:12px 14px;line-height:1.45}
+.built{display:grid;gap:8px;counter-reset:n}
+.built .placed{border:2px solid var(--ok);background:var(--ok-bg);border-radius:12px;padding:10px 14px;line-height:1.45;display:grid;gap:2px}
+.placed .lbl{font-size:.72em;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.formula{display:flex;flex-wrap:wrap;gap:6px;font-size:.8em;font-weight:600}
+.formula span{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+
+/* Flashcard */
+.flash{min-height:200px;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:10px;align-content:center}
+.flash .term{font-family:var(--display);font-weight:800;font-size:1.5em;line-height:1.2}
+.flash.open{border-color:var(--bic)}
+
+/* Défi */
+textarea{width:100%;min-height:90px;font:1em/1.6 var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical}
+.field{display:grid;gap:6px}
+.field label{font-weight:600}
+.timer{font-family:var(--display);font-weight:800;font-size:1.6em;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--paper);border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.9em}
+.chip[aria-pressed="true"]{border-color:var(--bic);color:var(--bic)}
+@media (prefers-reduced-motion:no-preference){.bar span{transition:width .3s}.opt,.mt{transition:background .15s,border-color .15s}}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">DEAES · Bloc 1 · Le cas de Mme L.</div>
+    <h1>Réviser <span class="hl">en jouant</span></h1>
+  </div>
+  <div class="tools">
+    <span class="stars" id="totalStars" aria-live="polite"></span>
+    <button class="small" id="bigText" aria-pressed="false">Texte plus grand</button>
+  </div>
+</header>
+
+<main id="home">
+  <p class="intro muted">Huit petits jeux de 2 à 5 minutes, sur la toilette et le petit-déjeuner de Mme L. Commence par « Je lis le sujet ». Une seule question à la fois. Fais-les dans l'ordre que tu veux et gagne jusqu'à <span class="hlo">3 étoiles</span> par jeu.</p>
+  <div class="grid" id="tiles"></div>
+</main>
+
+<main id="stage" hidden></main>
+</div>
+
+<script>
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+const canSpeak='speechSynthesis' in window;
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';u.rate=.92;speechSynthesis.speak(u)}catch(e){}}
+function sayBtn(){return canSpeak?'<button class="say" data-say>Écouter</button>':''}
+function wireSay(root){root.querySelectorAll('[data-say]').forEach(b=>b.addEventListener('click',()=>{const t=b.closest('.card').querySelector('.qt,.term');speak(t?t.textContent:'')}))}
+
+/* Texte plus grand */
+const bt=document.getElementById('bigText');
+function setBig(on){document.documentElement.classList.toggle('big',on);bt.setAttribute('aria-pressed',on);store.set('deaes-mmel-big',on)}
+bt.addEventListener('click',()=>setBig(bt.getAttribute('aria-pressed')!=='true'));setBig(store.get('deaes-mmel-big',false));
+
+/* Étoiles */
+function starsFor(r){return r>=.9?3:r>=.6?2:1}
+function getStars(){return store.get('deaes-mmel-stars',{})}
+function saveStars(id,n){const s=getStars();if(!s[id]||n>s[id]){s[id]=n;store.set('deaes-mmel-stars',s)}}
+function starStr(n){return '★'.repeat(n)+'☆'.repeat(3-n)}
+
+/* ========== DONNÉES ========== */
+const CATS=["Hygiène","Se vêtir","Manger et boire","Se déplacer","Communiquer","Émotions","Point d'appui"];
+const INDICES=[
+ {q:"Mme L. a une mobilité réduite.",ok:["Se déplacer"],e:"Elle se déplace difficilement : risque de chute à prévoir."},
+ {q:"Elle utilise un déambulateur.",ok:["Se déplacer","Point d'appui"],e:"Elle marche encore avec une aide technique : c'est une capacité à maintenir."},
+ {q:"Elle a besoin d'aide pour la toilette.",ok:["Hygiène"],e:"Besoin d'être propre et de protéger ses téguments (Henderson)."},
+ {q:"Elle a besoin d'aide pour s'habiller.",ok:["Se vêtir"],e:"Besoin de se vêtir. On l'aide pour ce qu'elle ne peut pas faire, elle fait le reste."},
+ {q:"Elle a besoin d'aide pour les repas.",ok:["Manger et boire"],e:"Besoin de manger et boire. Attention au risque de fausse route."},
+ {q:"Elle a du mal à exprimer clairement ses besoins.",ok:["Communiquer"],e:"Il faut s'appuyer sur le non verbal : gestes, regard, objets montrés."},
+ {q:"Elle peut se montrer anxieuse pendant les soins.",ok:["Émotions"],e:"Besoin de sécurité. On explique chaque geste et on prend son temps."},
+ {q:"Elle vit au foyer depuis 3 ans.",ok:["Point d'appui"],e:"Elle connaît les lieux, et l'équipe connaît ses habitudes : c'est rassurant pour elle."}
+];
+const VF=[
+ {q:"Mme L. vit au foyer depuis 3 ans.",ok:"Vrai",e:"Oui. Elle n'est pas nouvelle : l'équipe connaît ses habitudes."},
+ {q:"Mme L. vit dans un EHPAD.",ok:"Faux",e:"Non, dans un foyer pour adultes en situation de handicap."},
+ {q:"Pour respecter sa pudeur, je ferme la porte et je couvre les parties du corps non lavées.",ok:"Vrai",e:"Oui, c'est le respect de sa dignité."},
+ {q:"Pour gagner du temps, je fais toute la toilette à sa place.",ok:"Faux",e:"Non. Elle fait ce qu'elle peut seule : c'est le maintien de l'autonomie."},
+ {q:"Je me lave les mains avant et après la toilette.",ok:"Vrai",e:"Oui, ce sont les précautions standard d'hygiène."},
+ {q:"Je vérifie la température de l'eau avant de la mouiller.",ok:"Vrai",e:"Oui, pour éviter les brûlures et qu'elle ait froid."},
+ {q:"Si elle refuse la toilette, je l'oblige, c'est pour son hygiène.",ok:"Faux",e:"Non. On recherche son consentement, on cherche la raison du refus et on propose autre chose."},
+ {q:"Il faut demander son accord avant chaque soin.",ok:"Vrai",e:"Oui, c'est le consentement, un droit de la personne."},
+ {q:"La loi du 2 janvier 2002 protège les droits des personnes accueillies.",ok:"Vrai",e:"Oui : dignité, intimité, choix, participation au projet personnalisé."},
+ {q:"Quand elle est anxieuse, je parle vite pour finir plus tôt.",ok:"Faux",e:"Non : voix calme, phrases courtes, on prend son temps."},
+ {q:"Le déambulateur doit rester à portée de main.",ok:"Vrai",e:"Oui, pour qu'elle puisse se lever en sécurité."},
+ {q:"La partie 2 du sujet vaut 8 points.",ok:"Vrai",e:"Oui, c'est la plus grosse partie : passes-y le plus de temps."}
+];
+const GESTES=[
+ {q:"Tu arrives dans sa chambre le matin.",o:["J'entre et j'allume la grande lumière.","Je frappe, j'attends, je me présente et j'explique ce que je vais faire.","Je commence tout de suite à la déshabiller."],ok:1,e:"On respecte son intimité et on la prévient pour la rassurer."},
+ {q:"Pendant la toilette, elle peut se laver le visage seule.",o:["Je lui donne le gant et je la laisse faire.","Je le fais, c'est plus rapide.","Je lui dis qu'elle le fait mal."],ok:0,e:"Elle fait ce qu'elle peut : on maintient son autonomie et on la valorise."},
+ {q:"Elle se crispe et respire vite pendant le soin.",o:["Je continue sans rien dire.","J'appelle un collègue pour la tenir.","Je m'arrête, je la rassure d'une voix calme et j'explique chaque geste."],ok:2,e:"Son anxiété passe avant la rapidité du soin."},
+ {q:"Elle refuse de se laver ce matin.",o:["Je la lave quand même.","Je cherche pourquoi (fatigue, douleur, peur), je propose plus tard ou une toilette partielle, et je transmets.","J'écris « refus » et je ne reviens pas."],ok:1,e:"On respecte son choix, on cherche une solution, et l'équipe est informée."},
+ {q:"Au petit-déjeuner, elle a du mal à atteindre son bol.",o:["Je la fais manger à la cuillère.","Je la laisse se débrouiller.","Je l'installe bien droite et je mets tout à portée de main."],ok:2,e:"On adapte l'installation pour qu'elle mange seule, en sécurité."},
+ {q:"Elle ne trouve pas ses mots pour dire ce qu'elle veut boire.",o:["Je lui montre le café et le thé pour qu'elle désigne.","Je choisis pour elle.","Je lui demande de parler plus clairement."],ok:0,e:"Communication non verbale : elle peut choisir même sans les mots."},
+ {q:"Elle veut aller de la salle de bain à sa chambre.",o:["Je la presse pour qu'elle n'ait pas froid.","Je lui donne son déambulateur, je vérifie que le sol est sec et qu'elle a des chaussures fermées.","Je la porte."],ok:1,e:"Prévention des chutes tout en la laissant marcher."}
+];
+const PAIRS=[
+ ["Chute","Sol sec, tapis antidérapant, déambulateur à portée"],
+ ["Brûlure","Vérifier la température de l'eau et du café"],
+ ["Fausse route","Bien assise, droite, manger lentement"],
+ ["Avoir froid","Pièce chauffée, couvrir ce qui n'est pas lavé"],
+ ["Infection","Lavage des mains et matériel propre"],
+ ["Anxiété","Expliquer chaque geste, voix calme"],
+ ["Perte d'autonomie","La laisser faire ce qu'elle peut seule"]
+];
+const PUZZLES=[
+ {t:"La toilette, étape par étape",tip:"Pour la partie 2, raconte la toilette dans cet ordre. À chaque étape, dis ce qui respecte sa dignité, son autonomie ou la sécurité.",p:[
+  ["Entrer","Je frappe, je me présente, j'explique ce que je vais faire et je demande son accord."],
+  ["Préparer","Je ferme la porte, je chauffe la pièce, je me lave les mains et je prépare le matériel."],
+  ["Sécuriser","Je vérifie la température de l'eau, le sol est sec et son déambulateur est à portée."],
+  ["Laver","Elle se lave seule le visage et les mains. Je l'aide pour le reste en couvrant ce qui n'est pas lavé."],
+  ["Habiller","Elle choisit ses vêtements. Je l'aide seulement pour ce qu'elle ne peut pas faire."],
+  ["Ranger","Je range le matériel, je mets le linge sale au bon endroit et je me lave les mains."],
+  ["Transmettre","J'écris ce qu'elle a fait seule, son humeur et ce que j'ai observé."]]},
+ {t:"Le petit-déjeuner",tip:"Pense à relier chaque étape à sa mobilité (installation) et à son anxiété (calme, choix, rythme).",p:[
+  ["Installer","Elle s'assoit bien droite à table, son déambulateur à côté d'elle."],
+  ["Choisir","Je lui montre ce qu'il y a pour qu'elle choisisse, en désignant si les mots sont difficiles."],
+  ["Préparer","J'ouvre ce qu'elle ne peut pas ouvrir, je mets tout à portée et je vérifie que le café n'est pas trop chaud."],
+  ["Accompagner","Je reste près d'elle, au calme, et elle mange à son rythme."],
+  ["Observer","Je regarde si elle mange et boit assez, et si elle avale bien."],
+  ["Transmettre","Je note ce qu'elle a mangé et bu."]]},
+ {t:"Un paragraphe sur la dignité",tip:"Retiens la formule : Théorie → Situation → Action → Exemple → Pourquoi. Elle marche pour chaque idée de ta copie.",p:[
+  ["Théorie","La dignité est un droit de la personne accueillie, protégé par la loi du 2 janvier 2002."],
+  ["Situation","Mme L. a besoin d'aide pour sa toilette et peut être anxieuse."],
+  ["Action","Je ferme la porte, je couvre les parties du corps non lavées et j'explique chaque geste."],
+  ["Exemple","En stage, une résidente se détendait quand je lui disais à l'avance ce que j'allais faire."],
+  ["Pourquoi","Elle se sent respectée, sa pudeur est préservée et son anxiété diminue."]]}
+];
+const FLASH=[
+ ["Dignité","Respect dû à toute personne, quelle que soit sa situation. On ne la traite jamais comme un objet de soin."],
+ ["Pudeur","Gêne à montrer son corps. On ferme la porte, on couvre ce qui n'est pas lavé."],
+ ["Autonomie","Capacité à faire ses propres choix."],
+ ["Indépendance","Capacité à faire seul les gestes du quotidien."],
+ ["Consentement","Accord de la personne avant un soin. On le recherche à chaque fois, même avec des gestes."],
+ ["Bientraitance","Mettre la personne au centre : respecter ses droits, son rythme, ses choix."],
+ ["Loi du 2 janvier 2002","Loi qui garantit les droits des personnes accueillies : dignité, intimité, libre choix, participation à son projet."],
+ ["Projet personnalisé","Document construit avec la personne : ses besoins, ses envies, ses objectifs."],
+ ["Communication non verbale","Gestes, regard, expressions du visage, ton de la voix, objets montrés."],
+ ["Reformulation","Redire avec d'autres mots ce que la personne a exprimé, pour vérifier qu'on a bien compris."],
+ ["Aide technique","Matériel qui compense une difficulté : déambulateur, siège de douche, couverts adaptés."],
+ ["Fausse route","Quand un aliment ou une boisson passe dans les voies respiratoires. Prévention : position assise droite, manger lentement."],
+ ["Précautions standard","Règles d'hygiène pour éviter les infections : lavage des mains, gants si besoin, matériel propre."],
+ ["Anxiété","Inquiétude, peur. Signes : crispation, respiration rapide, agitation, refus."],
+ ["Transmissions","Écrites ou orales. Elles assurent la continuité de l'accompagnement entre collègues."]
+];
+const DEFIS={
+ "Toilette":{n:"La dignité et la pudeur.",a:"Je ferme la porte et je couvre ce qui n'est pas lavé.",p:"Elle se sent respectée et moins anxieuse."},
+ "Petit-déjeuner":{n:"Manger et boire est un besoin fondamental (Henderson).",a:"Je l'installe bien droite, avec tout à portée de main.",p:"Elle mange seule, sans risque de fausse route."},
+ "Refus":{n:"Le consentement : on ne force pas un soin.",a:"Je cherche la raison et je propose plus tard ou une toilette partielle.",p:"Elle garde le droit de choisir et l'hygiène reste assurée."},
+ "Communication":{n:"La communication non verbale.",a:"Je lui montre les objets pour qu'elle désigne ce qu'elle veut.",p:"Elle peut exprimer ses choix même sans les mots."},
+ "Droits":{n:"La loi du 2 janvier 2002 protège les droits des personnes accueillies.",a:"Je demande son accord avant chaque soin.",p:"Elle reste actrice de son accompagnement."}
+};
+
+const T1="Tu es AES dans un foyer pour adultes en situation de handicap. Mme L. a 62 ans. Elle vit au foyer depuis 3 ans.";
+const T2="Mme L. a une mobilité réduite. Elle utilise un déambulateur. Elle a besoin d'aide pour la toilette, l'habillage et les repas.";
+const T3="Elle a du mal à exprimer clairement ses besoins. Elle peut être anxieuse pendant les soins.";
+const T4="Aujourd'hui, tu dois l'accompagner pour la toilette du matin et le petit-déjeuner.";
+const T5="Partie 1 (5 points) : ses besoins essentiels, et les difficultés ou risques pendant la toilette et le repas. Partie 2 (8 points) : décrire la toilette étape par étape en respectant sa dignité, son autonomie, l'hygiène et la sécurité ; puis une stratégie pour le petit-déjeuner, selon sa mobilité et son anxiété. Partie 3 (4 points) : elle refuse de se laver, comment réagir ; comment adapter ta communication. Partie 4 (3 points) : expliquer comment ton accompagnement respecte ses droits, son autonomie et la sécurité.";
+const COMPR=[
+ {lbl:"Extrait 1 sur 5",ctx:T1,q:"Où travailles-tu ?",o:["Dans un EHPAD","Dans un foyer pour adultes en situation de handicap","Dans une MECS"],okList:["Dans un foyer pour adultes en situation de handicap"],e:"Un foyer pour adultes en situation de handicap."},
+ {lbl:"Extrait 1 sur 5",ctx:T1,q:"Quel âge a Mme L. ?",o:["52 ans","62 ans","82 ans"],okList:["62 ans"],e:"62 ans."},
+ {lbl:"Extrait 1 sur 5",ctx:T1,q:"Lire entre les lignes : elle vit au foyer depuis 3 ans. Qu'est-ce que ça change ?",o:["Elle ne connaît personne","L'équipe connaît ses habitudes et elle connaît les lieux","Elle va bientôt partir"],okList:["L'équipe connaît ses habitudes et elle connaît les lieux"],e:"Ce n'est pas une nouvelle arrivée : on peut s'appuyer sur ses habitudes."},
+ {lbl:"Extrait 2 sur 5",ctx:T2,q:"Quelle aide technique utilise-t-elle ?",o:["Un fauteuil roulant","Une canne","Un déambulateur"],okList:["Un déambulateur"],e:"Un déambulateur : il doit toujours rester à portée de main."},
+ {lbl:"Extrait 2 sur 5",ctx:T2,q:"Pour quoi a-t-elle besoin d'aide ?",o:["La toilette, l'habillage et les repas","Les courses et le ménage","Les transports"],okList:["La toilette, l'habillage et les repas"],e:"Trois actes essentiels de la vie quotidienne : c'est le cœur du bloc 1."},
+ {lbl:"Extrait 2 sur 5",ctx:T2,q:"Que veut dire « mobilité réduite » ?",o:["Elle ne peut pas du tout bouger","Elle se déplace difficilement","Elle ne veut pas sortir"],okList:["Elle se déplace difficilement"],e:"Elle bouge, mais avec difficulté : le risque de chute est à prévoir."},
+ {lbl:"Extrait 3 sur 5",ctx:T3,q:"Que veut dire « anxieuse » ?",o:["En colère","Fatiguée","Inquiète, stressée"],okList:["Inquiète, stressée"],e:"Anxieuse = inquiète, qui a peur."},
+ {lbl:"Extrait 3 sur 5",ctx:T3,q:"Quelle est sa difficulté de communication ?",o:["Elle n'entend pas","Elle a du mal à dire clairement ses besoins","Elle ne sait pas lire"],okList:["Elle a du mal à dire clairement ses besoins"],e:"Elle a du mal à s'exprimer, pas à comprendre."},
+ {lbl:"Extrait 3 sur 5",ctx:T3,q:"Lire entre les lignes : pourquoi faut-il bien observer ses gestes et son visage ?",o:["Pour la surveiller","Parce qu'elle a du mal à dire ses besoins avec des mots","Pour remplir un dossier"],okList:["Parce qu'elle a du mal à dire ses besoins avec des mots"],e:"Le non verbal nous dit ce qu'elle ne peut pas dire."},
+ {lbl:"Extrait 4 sur 5",ctx:T4,q:"Quels sont les deux moments de la journée du sujet ?",o:["La douche du soir et le dîner","La toilette du matin et le petit-déjeuner","Le repas de midi et la sieste"],okList:["La toilette du matin et le petit-déjeuner"],e:"Toilette du matin, puis petit-déjeuner."},
+ {lbl:"Extrait 5 sur 5 · Les consignes",ctx:T5,q:"Combien de parties dois-tu traiter ?",o:["3","4","5"],okList:["4"],e:"Quatre parties, pour 20 points au total."},
+ {lbl:"Extrait 5 sur 5 · Les consignes",ctx:T5,q:"Quelle partie vaut le plus de points ?",o:["La partie 1","La partie 2","La partie 4"],okList:["La partie 2"],e:"8 points : c'est là qu'il faut passer le plus de temps."},
+ {lbl:"Extrait 5 sur 5 · Les consignes",ctx:T5,q:"Que veut dire « étape par étape » ?",o:["Dans l'ordre, du début à la fin","Seulement les étapes difficiles","En résumé"],okList:["Dans l'ordre, du début à la fin"],e:"On raconte la toilette dans l'ordre : avant, pendant, après."},
+ {lbl:"Extrait 5 sur 5 · Les consignes",ctx:T5,q:"Pour la toilette, qu'est-ce que tu dois respecter ?",o:["La dignité, l'autonomie, l'hygiène et la sécurité","Le planning et la rapidité","Le règlement et les horaires"],okList:["La dignité, l'autonomie, l'hygiène et la sécurité"],e:"Ces mots de la consigne doivent apparaître dans ta réponse."},
+ {lbl:"Extrait 5 sur 5 · Les consignes",ctx:T5,q:"Pour le petit-déjeuner, de quoi dois-tu tenir compte ?",o:["De ses goûts et de son poids","De sa mobilité et de son anxiété","De l'heure et du menu"],okList:["De sa mobilité et de son anxiété"],e:"Mobilité (installation) et anxiété (calme, rythme, choix)."},
+ {lbl:"Extrait 5 sur 5 · Les consignes",ctx:T5,q:"La partie 3 parle de quoi ?",o:["Du refus de la toilette et de la communication","Des risques","Des droits"],okList:["Du refus de la toilette et de la communication"],e:"Comment réagir à son refus, et comment adapter ta communication."}
+];
+
+/* ========== ACTIVITÉS ========== */
+const ACTS=[
+ {id:"compr",name:"Je lis le sujet",time:"5 min",desc:"Le texte en petits morceaux, avec des questions pour vérifier que tu as compris.",run:el=>runner(el,"compr",COMPR,false)},
+ {id:"tri",name:"Le détective",time:"2 min",desc:"Lis un indice sur Mme L. et trouve de quel besoin il parle.",run:el=>runner(el,"tri",shuffle(INDICES).map(x=>({q:x.q,o:CATS,okList:x.ok,e:x.e})),true)},
+ {id:"vf",name:"Vrai ou faux",time:"3 min",desc:"Les bons réflexes et les notions, en mode éclair.",run:el=>runner(el,"vf",shuffle(VF).map(x=>({q:x.q,o:["Vrai","Faux"],okList:[x.ok],e:x.e})),true)},
+ {id:"geste",name:"Le bon geste",time:"3 min",desc:"Une situation, trois réactions. Laquelle est professionnelle ?",run:el=>runner(el,"geste",shuffle(GESTES).map(x=>({q:x.q,o:x.o,okList:[x.o[x.ok]],e:x.e})),false)},
+ {id:"relie",name:"Relie les paires",time:"3 min",desc:"Associe chaque risque pendant la toilette ou le repas à sa prévention.",run:relie},
+ {id:"puzzle",name:"Remets dans l'ordre",time:"5 min",desc:"La toilette étape par étape, le petit-déjeuner, puis un paragraphe.",run:puzzle},
+ {id:"flash",name:"Cartes notions",time:"4 min",desc:"Un mot, tu dis la définition, tu retournes la carte.",run:flash},
+ {id:"defi",name:"Mini-défi écrit",time:"5 min",desc:"Trois phrases courtes seulement : une notion, une action, pourquoi.",run:defi}
+];
+
+function renderHome(){
+  const s=getStars();const tot=Object.values(s).reduce((a,b)=>a+b,0);
+  document.getElementById('totalStars').textContent='★ '+tot+' / '+ACTS.length*3;
+  document.getElementById('tiles').innerHTML=ACTS.map(a=>`<button class="tile" data-id="${a.id}"><div class="meta"><span>${a.time}</span><span class="stars">${starStr(s[a.id]||0)}</span></div><h3>${a.name}</h3><p>${a.desc}</p></button>`).join('');
+  document.querySelectorAll('.tile').forEach(t=>t.addEventListener('click',()=>open(t.dataset.id)));
+}
+const home=document.getElementById('home'),stage=document.getElementById('stage');
+function open(id){const a=ACTS.find(x=>x.id===id);home.hidden=true;stage.hidden=false;
+  stage.innerHTML=`<div class="act"><button class="back" id="backBtn">← Toutes les activités</button><h2>${a.name}</h2><div id="actBody" class="act" style="padding:0"></div></div>`;
+  document.getElementById('backBtn').addEventListener('click',goHome);a.run(document.getElementById('actBody'));window.scrollTo(0,0)}
+function goHome(){try{speechSynthesis.cancel()}catch(e){}stage.hidden=true;home.hidden=false;renderHome();window.scrollTo(0,0)}
+
+function endScreen(el,id,score,n,extra,replay){
+  const st=starsFor(score/n);saveStars(id,st);
+  el.innerHTML=`<div class="card"><p class="end-stars" aria-label="${st} étoiles sur 3">${starStr(st)}</p><p class="big-score">${score} / ${n}</p><p>${st===3?"Bravo, c'est maîtrisé !":st===2?"Bien joué ! Encore une partie pour les 3 étoiles ?":"C'est un début. Rejoue, ça rentre à force de répéter."}</p>${extra||''}<div class="row"><button class="go" id="again">Rejouer</button><button class="ghost" id="toHome">Autre activité</button></div></div>`;
+  el.querySelector('#again').addEventListener('click',replay);el.querySelector('#toHome').addEventListener('click',goHome);
+}
+
+/* Moteur de questions, une à la fois */
+function runner(el,id,items,two){
+  let i=0,score=0;const missed=[];
+  function show(){
+    if(i>=items.length){
+      const extra=missed.length?`<div><h3>À revoir</h3><ul class="clean">${missed.map(m=>`<li>${m}</li>`).join('')}</ul></div>`:'';
+      return endScreen(el,id,score,items.length,extra,()=>ACTS.find(a=>a.id===id).run(el));
+    }
+    const it=items[i];
+    el.innerHTML=`<div class="row" style="justify-content:space-between"><span class="muted">${i+1} sur ${items.length}</span><span class="stars">${score} bonne${score>1?'s':''} réponse${score>1?'s':''}</span></div>
+    <div class="bar"><span style="width:${i/items.length*100}%"></span></div>
+    <div class="card">${it.ctx?`<div class="ctx"><div class="row" style="justify-content:space-between"><span class="eyebrow">${it.lbl||'Le texte'}</span>${canSpeak?'<button class="say" data-sayctx>Écouter le texte</button>':''}</div><p class="ctxt">${it.ctx}</p></div>`:''}<div class="qhead"><p class="qt">${it.q}</p>${sayBtn()}</div>
+    <div class="opts ${two?'two':''}">${it.o.map((o,j)=>`<button class="opt" data-j="${j}">${o}</button>`).join('')}</div>
+    <p class="fb" hidden></p><button class="go" id="next" hidden>${i+1<items.length?'Suivant →':'Voir mon score'}</button></div>`;
+    wireSay(el);
+    el.querySelectorAll('[data-sayctx]').forEach(b=>b.addEventListener('click',()=>speak(el.querySelector('.ctxt').textContent)));
+    el.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+      const val=it.o[+b.dataset.j],good=it.okList.includes(val);if(good)score++;else missed.push(it.q);
+      el.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(it.okList.includes(it.o[+x.dataset.j]))x.classList.add('good')});
+      if(!good)b.classList.add('bad');
+      const fb=el.querySelector('.fb');fb.hidden=false;fb.className='fb '+(good?'ok':'ko');
+      fb.textContent=(good?'Bien vu ! ':'Pas tout à fait. ')+(it.okList.length>1&&id==='tri'?'Réponses possibles : '+it.okList.join(' ou ')+'. ':'')+it.e;
+      const n=el.querySelector('#next');n.hidden=false;n.focus();
+    }));
+    el.querySelector('#next').addEventListener('click',()=>{i++;show()});
+  }
+  show();
+}
+
+/* Relier */
+function relie(el){
+  const left=shuffle(PAIRS.map((p,i)=>({t:p[0],i}))),right=shuffle(PAIRS.map((p,i)=>({t:p[1],i})));
+  let sel=null,errors=0,done=0;
+  el.innerHTML=`<p class="muted">Touche un risque à gauche, puis la bonne prévention à droite.</p>
+  <div class="match"><div class="col">${left.map(x=>`<button class="mt" data-side="L" data-i="${x.i}">${x.t}</button>`).join('')}</div>
+  <div class="col">${right.map(x=>`<button class="mt" data-side="R" data-i="${x.i}">${x.t}</button>`).join('')}</div></div>
+  <p class="muted" id="rmsg" aria-live="polite">Erreurs : 0</p>`;
+  el.querySelectorAll('.mt').forEach(b=>b.addEventListener('click',()=>{
+    if(b.classList.contains('done'))return;
+    if(!sel||sel.dataset.side===b.dataset.side){el.querySelectorAll('.mt.sel').forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel');return}
+    if(sel.dataset.i===b.dataset.i){[sel,b].forEach(x=>{x.classList.remove('sel');x.classList.add('done');x.disabled=true});done++;sel=null;
+      if(done===PAIRS.length){const sc=Math.max(0,PAIRS.length-errors);setTimeout(()=>endScreen(el,'relie',sc,PAIRS.length,'<p class="muted">Ces paires t\'aident pour la partie 1 (les risques) et la partie 2 (la sécurité).</p>',()=>relie(el)),500)}}
+    else{errors++;const a=sel;[a,b].forEach(x=>x.classList.add('wrong'));setTimeout(()=>[a,b].forEach(x=>x.classList.remove('wrong','sel')),600);sel=null}
+    el.querySelector('#rmsg').textContent='Erreurs : '+errors;
+  }));
+}
+
+/* Puzzle */
+function puzzle(el,k=0,total=0,errors=0){
+  const P=PUZZLES[k];let step=0,err=0;
+  const pieces=shuffle(P.p.map((p,i)=>({lbl:p[0],t:p[1],i})));
+  function draw(){
+    el.innerHTML=`<p class="muted">Puzzle ${k+1} sur ${PUZZLES.length} · ${P.t}. Touche les phrases dans le bon ordre.</p>
+    <div class="formula" aria-label="La formule d'un bon paragraphe">${P.p.map(p=>`<span>${p[0]}</span>`).join('')}</div>
+    <div class="built">${P.p.slice(0,step).map(p=>`<div class="placed"><span class="lbl">${p[0]}</span>${p[1]}</div>`).join('')}</div>
+    <div class="pieces">${pieces.filter(x=>x.i>=step).map(x=>`<button class="piece" data-i="${x.i}">${x.t}</button>`).join('')}</div>
+    <p class="fb ko" id="pmsg" hidden></p>`;
+    el.querySelectorAll('.piece').forEach(b=>b.addEventListener('click',()=>{
+      if(+b.dataset.i===step){step++;if(step===P.p.length)return finish();draw()}
+      else{err++;const m=el.querySelector('#pmsg');m.hidden=false;m.textContent='Pas encore. Il faut maintenant : '+P.p[step][0]+'.'}
+    }));
+  }
+  function finish(){
+    el.innerHTML=`<div class="card"><h3>Bravo, c'est dans l'ordre !</h3>${P.p.map(p=>`<p><span class="hl">${p[0]}</span> ${p[1]}</p>`).join('')}<p class="muted">${P.tip}</p><button class="go" id="pnext">${k+1<PUZZLES.length?'Puzzle suivant →':'Voir mon score'}</button></div>`;
+    el.querySelector('#pnext').addEventListener('click',()=>{
+      const t=total+P.p.length,e=errors+err;
+      if(k+1<PUZZLES.length)puzzle(el,k+1,t,e);
+      else endScreen(el,'puzzle',Math.max(0,t-e),t,'',()=>puzzle(el));
+    });
+  }
+  draw();
+}
+
+/* Flashcards */
+function flash(el){
+  const cards=shuffle(FLASH);let i=0,known=0;const review=[];
+  function show(){
+    if(i>=cards.length)return endScreen(el,'flash',known,cards.length,review.length?`<div><h3>À revoir</h3><ul class="clean">${review.map(r=>`<li><strong>${r[0]}</strong> : ${r[1]}</li>`).join('')}</ul></div>`:'',()=>flash(el));
+    const c=cards[i];
+    el.innerHTML=`<div class="row" style="justify-content:space-between"><span class="muted">Carte ${i+1} sur ${cards.length}</span><span class="stars">${known} sue${known>1?'s':''}</span></div>
+    <div class="bar"><span style="width:${i/cards.length*100}%"></span></div>
+    <div class="card"><div class="qhead"><span class="term">${c[0]}</span>${sayBtn()}</div><p class="muted" id="hint">Dis la définition dans ta tête ou à voix haute.</p><p id="def" hidden>${c[1]}</p>
+    <button class="go" id="flip">Retourner la carte</button>
+    <div class="row" id="rate" hidden><button class="go" id="yes">Je savais</button><button class="ghost" id="no">À revoir</button></div></div>`;
+    wireSay(el);
+    el.querySelector('#flip').addEventListener('click',()=>{el.querySelector('#def').hidden=false;el.querySelector('#hint').hidden=true;el.querySelector('#flip').hidden=true;el.querySelector('#rate').hidden=false;if(canSpeak)0});
+    el.querySelector('#yes').addEventListener('click',()=>{known++;i++;show()});
+    el.querySelector('#no').addEventListener('click',()=>{review.push(c);i++;show()});
+  }
+  show();
+}
+
+/* Mini-défi */
+function defi(el){
+  let theme=Object.keys(DEFIS)[0],iv=null,left=300;
+  function draw(){
+    el.innerHTML=`<p class="muted">Choisis un thème. Écris 3 phrases courtes, une par case. Pas besoin de belles phrases : ce sont tes idées qui comptent.</p>
+    <div class="chips" role="group" aria-label="Thème">${Object.keys(DEFIS).map(t=>`<button class="chip" aria-pressed="${t===theme}" data-t="${t}">${t}</button>`).join('')}</div>
+    <div class="card"><div class="row" style="justify-content:space-between"><span class="timer" id="tm">5:00</span><button class="ghost" id="tgo">Lancer 5 minutes</button></div>
+    <div class="field"><label for="f1">1. Une notion (un auteur, un besoin, une définition)</label><textarea id="f1"></textarea></div>
+    <div class="field"><label for="f2">2. Une action concrète pour Mme L.</label><textarea id="f2"></textarea></div>
+    <div class="field"><label for="f3">3. Pourquoi ? (ce que ça lui apporte)</label><textarea id="f3"></textarea></div>
+    <button class="go" id="show">Comparer avec un exemple</button>
+    <div id="model" hidden class="fb ok"></div></div>`;
+    el.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{theme=c.dataset.t;clearInterval(iv);iv=null;left=300;draw()}));
+    const tm=el.querySelector('#tm'),tg=el.querySelector('#tgo');
+    const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+    tg.addEventListener('click',()=>{if(iv){clearInterval(iv);iv=null;tg.textContent='Reprendre';return}tg.textContent='Pause';iv=setInterval(()=>{left--;tm.textContent=left>0?fmt(left):'Terminé !';if(left<=0){clearInterval(iv);iv=null;tg.textContent='Relancer';left=300}},1000)});
+    el.querySelector('#show').addEventListener('click',()=>{const d=DEFIS[theme],m=el.querySelector('#model');m.hidden=false;
+      m.innerHTML=`<p><strong>Notion :</strong> ${d.n}</p><p><strong>Action :</strong> ${d.a}</p><p><strong>Pourquoi :</strong> ${d.p}</p><p style="margin-top:8px">Ta réponse peut être différente et juste. Vérifie juste que tu as bien les 3 morceaux.</p>`;
+      const filled=['f1','f2','f3'].filter(f=>el.querySelector('#'+f).value.trim().length>3).length;saveStars('defi',filled===3?3:filled===2?2:1);
+      const btn=el.querySelector('#show');btn.textContent='Autre thème ?';btn.onclick=()=>{const ks=Object.keys(DEFIS);theme=ks[(ks.indexOf(theme)+1)%ks.length];clearInterval(iv);iv=null;left=300;draw()};
+    });
+  }
+  draw();
+}
+
+renderHome();
+</script>
